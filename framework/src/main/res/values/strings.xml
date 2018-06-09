@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">framework</string>
+    <string name="common_loading">正在加载...</string>
+</resources>

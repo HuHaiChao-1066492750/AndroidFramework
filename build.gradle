@@ -1,0 +1,64 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    buildToolsVersion = '27.0.3'
+    versionCode = 1
+    versionName = '1.0'
+    libMinSdkVersion = 14
+    appMinSdkVersion = 16
+    targetSdkVersion = 27
+    compileSdkVersion = 27
+
+    //support
+    supportVersion = '27.1.1'
+
+    //注解
+    versionName_butterknife = '8.8.1'
+
+    //网络 rxjava2+retrofit2
+    versionName_rxjava2 = '2.1.14'
+    versionName_rxandroid = '2.0.2'
+    versionName_retrofit2 = '2.4.0'
+    versionName_okhttp = '3.10.0'
+
+    //rxlifecycle2
+    versionName_rxlifecycle2 = '2.1.0'
+
+    //JSON-fastjson
+    versionName_fastjson = '1.2.47'
+    versionName_fastjson_android = '1.1.68.android'
+
+    //Glide
+    versionName_glide = '4.7.1'
+
+    //android-gif-drawable
+    versionName_gif = '1.2.12'
+
+    //工具类
+    versionName_utilcode = '1.16.4'
+
+    //日志
+    versionName_logger = '2.2.0'
+}
