@@ -15,6 +15,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://maven.google.com" }
     }
 }
 
@@ -24,6 +25,7 @@ task clean(type: Delete) {
 
 ext {
     buildToolsVersion = '27.0.3'
+
     versionCode = 1
     versionName = '1.0'
     libMinSdkVersion = 14
@@ -32,7 +34,7 @@ ext {
     compileSdkVersion = 27
 
     //support
-    supportVersion = '27.1.1'
+    supportVersion = '25.3.1'
 
     //注解
     versionName_butterknife = '8.8.1'
@@ -51,14 +53,11 @@ ext {
     versionName_fastjson_android = '1.1.68.android'
 
     //Glide
-    versionName_glide = '4.7.1'
+    versionName_glide = '3.7.0'
 
     //android-gif-drawable
     versionName_gif = '1.2.12'
 
     //工具类
-    versionName_utilcode = '1.16.4'
-
-    //日志
-    versionName_logger = '2.2.0'
+    versionName_utilcode = '1.18.0'
 }

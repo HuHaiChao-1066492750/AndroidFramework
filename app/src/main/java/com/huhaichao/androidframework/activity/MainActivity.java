@@ -1,16 +1,19 @@
-package com.huhaichao.androidframework;
+package com.huhaichao.androidframework.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.FrameLayout;
+import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
+import com.huhaichao.androidframework.R;
+import com.huhaichao.androidframework.fragment.UtilsFragment;
 import com.huhaichao.androidframework.base.BaseActivity;
 import com.huhaichao.androidframework.base.BaseFragment;
+import com.huhaichao.androidframework.fragment.ViewFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.activity_main_fragment_container)
-    protected FrameLayout activity_main_fragment_container;
+    private static final String TAG = "MainActivity";
 
     @BindView(R.id.activity_main_bottom_navigation_bar)
     protected BottomNavigationBar activity_main_bottom_navigation_bar;
@@ -27,19 +29,6 @@ public class MainActivity extends BaseActivity {
     private TextBadgeItem messageBadgeItem;
     private BottomNavigationItem bottomNavigationItem;
     private List<BaseFragment> fragmentList;
-    private boolean isExit = false;//退出状态
-
-    @Override
-    protected void setContentView() {
-        setContentView(R.layout.activity_main);
-    }
-
-    @Override
-    protected void initData() {
-        fragmentList = getFragments();
-        initBottomNavigationBar();
-        replaceFragment(0);
-    }
 
     public void initBottomNavigationBar() {
         activity_main_bottom_navigation_bar.setMode(BottomNavigationBar.MODE_DEFAULT);
@@ -47,9 +36,8 @@ public class MainActivity extends BaseActivity {
         activity_main_bottom_navigation_bar.setInActiveColor(R.color.white);
         messageBadgeItem = new TextBadgeItem();
         activity_main_bottom_navigation_bar
-                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "你好1"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "你好2"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "你好3"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "Utils"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "Views"))
                 .setFirstSelectedPosition(0)
                 .initialise();
         activity_main_bottom_navigation_bar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -79,12 +67,10 @@ public class MainActivity extends BaseActivity {
 
     private List<BaseFragment> getFragments() {
         List<BaseFragment> fragments = new ArrayList<>();
-        fragments.add(TaskFragment.newInstance());
-        fragments.add(TaskFragment.newInstance());
-        fragments.add(TaskFragment.newInstance());
+        fragments.add(UtilsFragment.newInstance());
+        fragments.add(ViewFragment.newInstance());
         return fragments;
     }
-
 
     private void replaceFragment(int position) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -105,5 +91,48 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onSuccessCallback(int requestCode, JSONObject jsonObject) {
 
+    }
+
+    @Override
+    public void initData(Bundle bundle) {
+
+    }
+
+    @Override
+    public int bindLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public void initView(Bundle savedInstanceState, View contentView) {
+        fragmentList = getFragments();
+        initBottomNavigationBar();
+        replaceFragment(0);
+    }
+
+    @Override
+    public void doBusiness() {
+
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+    }
+
+    @Override
+    public void onWidgetClick(View view) {
+        switch (view.getId()) {
+            case 0:
+                break;
+            default:
+                break;
+        }
     }
 }

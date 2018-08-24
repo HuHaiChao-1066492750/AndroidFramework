@@ -1,16 +1,21 @@
 package com.huhaichao.framework.base;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.CrashUtils;
+import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
-import com.orhanobut.logger.AndroidLogAdapter;
-import com.orhanobut.logger.BuildConfig;
-import com.orhanobut.logger.FormatStrategy;
-import com.orhanobut.logger.Logger;
-import com.orhanobut.logger.PrettyFormatStrategy;
+import com.huhaichao.framework.utils.CacheManager;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -28,12 +33,19 @@ public class BaseApplication extends Application {
     private static WeakReference<Activity> mCurrentActivity;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         mBaseApplication = this;
+        // TODO: 2018/8/14 第三方SDK的初始化放线程里
         //工具类
         Utils.init(this);
-        initLogger();
+        initLog();
+        initCrash();
         /**注册ActivityListener监听*/
         registerActivityListener();
     }
@@ -118,22 +130,47 @@ public class BaseApplication extends Application {
         return mCurrentActivity;
     }
 
-    private void initLogger() {
-        FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
-                .showThreadInfo(false)  //（可选）是否显示线程信息。 默认值为true
-                .methodCount(0)         // （可选）要显示的方法行数。 默认2
-//                .methodOffset(7)        // （可选）隐藏内部方法调用到偏移量。 默认5
-//                .logStrategy(customLog) //（可选）更改要打印的日志策略。 默认LogCat
-                .tag("hhc")   //（可选）每个日志的全局标记。 默认PRETTY_LOGGER
-                .build();
-        Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
-        Logger.addLogAdapter(new AndroidLogAdapter() {
+    /**
+     * 初始化日志工具
+     */
+    public void initLog() {
+        LogUtils.getConfig()
+//                .setLogSwitch(BuildConfig.DEBUG)// 设置 log 总开关，包括输出到控制台和文件，默认开
+//                .setConsoleSwitch(BuildConfig.DEBUG)// 设置是否输出到控制台开关，默认开
+                .setGlobalTag(null)// 设置 log 全局标签，默认为空
+                // 当全局标签不为空时，我们输出的 log 全部为该 tag，
+                // 为空时，如果传入的 tag 为空那就显示类名，否则显示 tag
+                .setLogHeadSwitch(false)// 设置 log 头信息开关，默认为开
+                .setLog2FileSwitch(false)// 打印 log 时是否存到文件的开关，默认关
+                .setDir(CacheManager.getInstance().getLogFilesPath())// 当自定义路径为空时，写入应用的/cache/log/目录中
+                .setFilePrefix("log")// 当文件前缀为空时，默认为"util"，即写入文件为"util-MM-dd.txt"
+                .setBorderSwitch(true)// 输出日志是否带边框开关，默认开
+                .setSingleTagSwitch(true)// 一条日志仅输出一条，默认开，为美化 AS 3.1 的 Logcat
+                .setConsoleFilter(LogUtils.V)// log 的控制台过滤器，和 logcat 过滤器同理，默认 Verbose
+                .setFileFilter(LogUtils.V)// log 文件过滤器，和 logcat 过滤器同理，默认 Verbose
+                .setStackDeep(1)// log 栈深度，默认为 1
+                .setStackOffset(0);// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
+    }
+
+    // TODO: 2018/6/8 程序意外终止、crash崩溃之前,日志保存和上传服务器
+    @SuppressLint("MissingPermission")
+    private void initCrash() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        CrashUtils.init(new CrashUtils.OnCrashListener() {
             @Override
-            public boolean isLoggable(int priority, String tag) {
-                return BuildConfig.DEBUG;
+            public void onCrash(String crashInfo, Throwable e) {
+                LogUtils.e(crashInfo);
+                AppUtils.relaunchApp();
             }
         });
     }
-
-    // TODO: 2018/6/8 程序意外终止、闪退之前
 }

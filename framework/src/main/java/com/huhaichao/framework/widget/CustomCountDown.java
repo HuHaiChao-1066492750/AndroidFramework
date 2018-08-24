@@ -22,6 +22,7 @@ public class CustomCountDown extends CountDownTimer {
     @Override
     public void onTick(long millisUntilFinished) {
         if (countDown != null) {
+            // TODO: 2018/8/9 保存上次点击获取验证码的时间 ，再次获取的时间间隔要大于60s
             countDown.setClickable(false);//设置不能点击
             countDown.setText(millisUntilFinished / 1000 + " 秒后重发");//设置倒计时时间
             Spannable span = new SpannableString(countDown.getText().toString());//获取按钮的文字

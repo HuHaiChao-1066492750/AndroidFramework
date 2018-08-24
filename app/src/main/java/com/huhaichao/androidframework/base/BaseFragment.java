@@ -4,40 +4,94 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.huhaichao.framework.base.RxBaseActivity;
 import com.huhaichao.framework.base.RxBaseFragment;
+import com.huhaichao.framework.network.HttpRequestCallback;
 import com.huhaichao.framework.widget.CustomDialog;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by HuHaiChao on 2018/6/1.
  */
 
-public abstract class BaseFragment extends RxBaseFragment {
-    protected RxBaseActivity mRxBaseActivity;
+public abstract class BaseFragment extends RxBaseFragment implements HttpRequestCallback<JSONObject> {
+    public static final String TAG = "BaseFragment";
+    protected View mContentView;
+    protected Activity mActivity;
+    private long lastClick = 0;
 
-    //获取宿主Activity
-    protected RxBaseActivity getBaseActivity() {
-        return mRxBaseActivity;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setBaseView(inflater, bindLayout());
+        ButterKnife.bind(this, mContentView);
+        return mContentView;
+    }
+
+    protected void setBaseView(@NonNull LayoutInflater inflater, @LayoutRes int layoutId) {
+        if (layoutId <= 0) return;
+        mContentView = inflater.inflate(layoutId, null);
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.mRxBaseActivity = (RxBaseActivity) activity;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle bundle = getArguments();
+        initData(bundle);
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mActivity = getActivity();
+        initView(savedInstanceState, mContentView);
+        doBusiness();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView: ");
+        if (mContentView != null) {
+            ((ViewGroup) mContentView.getParent()).removeView(mContentView);
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        super.onDestroy();
+    }
+
+    private boolean isFastClick() {
+        long now = System.currentTimeMillis();
+        if (now - lastClick >= 200) {
+            lastClick = now;
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * 弹出消息
      */
     protected void showToast(String msg) {
-        Toast.makeText(mRxBaseActivity, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
     }
 
     public void showToast(int msgID) {
-        Toast.makeText(mRxBaseActivity, msgID, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, msgID, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -45,7 +99,7 @@ public abstract class BaseFragment extends RxBaseFragment {
      */
     protected void startOtherActivity(Class<?> className, Bundle bundle) {
         Intent intent = new Intent();
-        intent.setClass(mRxBaseActivity, className);
+        intent.setClass(mActivity, className);
         if (bundle != null) {
             intent.putExtras(bundle);
         }
@@ -67,7 +121,7 @@ public abstract class BaseFragment extends RxBaseFragment {
      */
     protected void showInformationDialog(String message, int which1, int which2,
                                          DialogInterface.OnClickListener onClickListener) {
-        new CustomDialog.Builder(mRxBaseActivity)
+        new CustomDialog.Builder(mActivity)
                 .setTitle("智能家居")
                 .setMessage(message)
                 .setButton(which1, "确定", onClickListener)
@@ -78,12 +132,9 @@ public abstract class BaseFragment extends RxBaseFragment {
     }
 
     @Override
-    protected void initData(View view, Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
+    public void onClick(View view) {
+        if (!isFastClick()) {
+            onWidgetClick(view);
+        }
     }
 }

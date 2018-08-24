@@ -1,8 +1,8 @@
 package com.huhaichao.framework.network;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.huhaichao.framework.base.BaseApplication;
-import com.orhanobut.logger.Logger;
 
 import java.io.EOFException;
 import java.io.File;
@@ -107,28 +107,29 @@ public class RetrofitFactory {
             if (hasRequestBody) {
                 requestStartMessage += " (" + requestBody.contentLength() + "-byte body)";
             }
-            Logger.t(TAG).d(requestStartMessage);
+            LogUtils.dTag(TAG, requestStartMessage);
+
 
             if (hasRequestBody) {
                 if (requestBody.contentType() != null) {
-//                    Logger.t(TAG).d("Content-Type: " + requestBody.contentType());
+//                    LogUtils.dTag(TAG, "Content-Type: " + requestBody.contentType());
                 }
                 if (requestBody.contentLength() != -1) {
-//                    Logger.t(TAG).d("Content-Length: " + requestBody.contentLength());
+//                    LogUtils.dTag(TAG, "Content-Length: " + requestBody.contentLength());
                 }
 
                 Headers headers = request.headers();
                 for (int i = 0, count = headers.size(); i < count; i++) {
                     String name = headers.name(i);
                     if (!"Content-Type".equalsIgnoreCase(name) && !"Content-Length".equalsIgnoreCase(name)) {
-//                        Logger.t(TAG).d(name + ": " + headers.value(i));
+//                        LogUtils.dTag(TAG, name + ": " + headers.value(i));
                     }
                 }
 
                 if (!hasRequestBody) {
-                    Logger.t(TAG).d("--> END " + request.method());
+                    LogUtils.dTag(TAG, "--> END " + request.method());
                 } else if (bodyHasUnknownEncoding(request.headers())) {
-                    Logger.t(TAG).d("--> END " + request.method() + " (encoded body omitted)");
+                    LogUtils.dTag(TAG, "--> END " + request.method() + " (encoded body omitted)");
                 } else {
                     Buffer buffer = new Buffer();
                     requestBody.writeTo(buffer);
@@ -140,12 +141,10 @@ public class RetrofitFactory {
                     }
 
                     if (isPlaintext(buffer)) {
-                        Logger.t(TAG).json(buffer.readString(charset));
-                        Logger.t(TAG).d("--> END " + request.method()
-                                + " (" + requestBody.contentLength() + "-byte body)");
+                        LogUtils.json(TAG, buffer.readString(charset));
+                        LogUtils.dTag(TAG, "--> END " + request.method() + " (" + requestBody.contentLength() + "-byte body)");
                     } else {
-                        Logger.t(TAG).d("--> END " + request.method() + " (binary "
-                                + requestBody.contentLength() + "-byte body omitted)");
+                        LogUtils.dTag(TAG, "--> END " + request.method() + " (binary " + requestBody.contentLength() + "-byte body omitted)");
                     }
                 }
             }
@@ -155,14 +154,14 @@ public class RetrofitFactory {
             try {
                 response = chain.proceed(request);
             } catch (Exception e) {
-                Logger.t(TAG).d("<-- HTTP FAILED: " + e);
+                LogUtils.dTag(TAG, "<-- HTTP FAILED: " + e);
                 throw e;
             }
             long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
 
             ResponseBody responseBody = response.body();
             long contentLength = responseBody.contentLength();
-            Logger.t(TAG).d("<-- "
+            LogUtils.dTag(TAG,"<-- "
                     + response.code()
                     + (response.message().isEmpty() ? "" : ' ' + response.message())
                     + ' ' + response.request().url()
@@ -170,13 +169,13 @@ public class RetrofitFactory {
 
             Headers headers = response.headers();
             for (int i = 0, count = headers.size(); i < count; i++) {
-//                Logger.t(TAG).d(headers.name(i) + ": " + headers.value(i));
+//                LogUtils.dTag(TAG,headers.name(i) + ": " + headers.value(i));
             }
-            
+
             if (!HttpHeaders.hasBody(response)) {
-                Logger.t(TAG).d("<-- END HTTP");
+                LogUtils.dTag(TAG,"<-- END HTTP");
             } else if (bodyHasUnknownEncoding(response.headers())) {
-                Logger.t(TAG).d("<-- END HTTP (encoded body omitted)");
+                LogUtils.dTag(TAG,"<-- END HTTP (encoded body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE); // Buffer the entire body.
@@ -204,19 +203,19 @@ public class RetrofitFactory {
                 }
 
                 if (!isPlaintext(buffer)) {
-                    Logger.t(TAG).d("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
+                    LogUtils.dTag(TAG,"<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
                     return response;
                 }
 
                 if (contentLength != 0) {
-                    Logger.t(TAG).json(buffer.clone().readString(charset));
+                    LogUtils.json(TAG,buffer.clone().readString(charset));
                 }
 
                 if (gzippedLength != null) {
-                    Logger.t(TAG).d("<-- END HTTP (" + buffer.size() + "-byte, "
+                    LogUtils.dTag(TAG,"<-- END HTTP (" + buffer.size() + "-byte, "
                             + gzippedLength + "-gzipped-byte body)");
                 } else {
-                    Logger.t(TAG).d("<-- END HTTP (" + buffer.size() + "-byte body)");
+                    LogUtils.dTag(TAG,"<-- END HTTP (" + buffer.size() + "-byte body)");
                 }
             }
             return response;

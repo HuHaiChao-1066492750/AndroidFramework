@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import com.huhaichao.framework.R;
 import com.huhaichao.framework.base.BaseApplication;
 import com.huhaichao.framework.widget.CustomNotifyDialog;
-import com.orhanobut.logger.Logger;
 
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -25,6 +24,7 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
     private Disposable disposable = null;//注意内存泄漏
     private int requestCode;
     private CustomNotifyDialog customNotifyDialog = null;//横竖屏切换有问题,context不存在了，回调时对customNotifyDialog的操作有问题
+                                                         //加入生命周期解决问题
 
     public HttpObserverListener(int requestCode, HttpRequestCallback httpRequestCallback) {
         this.mContext = BaseApplication.getActivityReference().get();//注意内存泄漏
