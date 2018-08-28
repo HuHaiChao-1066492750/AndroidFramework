@@ -2,7 +2,7 @@ package com.huhaichao.framework.network;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.NetworkUtils;
-import com.huhaichao.framework.base.BaseApplication;
+import com.huhaichao.framework.base.IBaseApplication;
 
 import java.io.EOFException;
 import java.io.File;
@@ -64,7 +64,7 @@ public class RetrofitFactory {
     //待：缓存 请求头部
     public <T> T create(final Class<T> cls) {
         if (mRetrofit == null) {
-            File cacheFile = new File(BaseApplication.getApplication().getExternalCacheDir(), "Pragma");
+            File cacheFile = new File(IBaseApplication.getApplication().getExternalCacheDir(), "Pragma");
             Cache cache = new Cache(cacheFile, 1024 * 1024 * 50);
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()

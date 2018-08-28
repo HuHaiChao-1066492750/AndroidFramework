@@ -7,7 +7,7 @@ import android.view.View;
  * Created by HuHaiChao on 2018/8/7.
  */
 
-interface BaseView extends View.OnClickListener{
+interface IBaseView extends View.OnClickListener{
 
     /**
      * 初始化数据

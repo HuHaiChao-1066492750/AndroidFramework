@@ -14,8 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.huhaichao.framework.base.RxBaseActivity;
-import com.huhaichao.framework.base.RxBaseFragment;
+import com.huhaichao.framework.base.IRxIBaseFragment;
 import com.huhaichao.framework.network.HttpRequestCallback;
 import com.huhaichao.framework.widget.CustomDialog;
 
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by HuHaiChao on 2018/6/1.
  */
 
-public abstract class BaseFragment extends RxBaseFragment implements HttpRequestCallback<JSONObject> {
+public abstract class BaseFragment extends IRxIBaseFragment implements HttpRequestCallback<JSONObject> {
     public static final String TAG = "BaseFragment";
     protected View mContentView;
     protected Activity mActivity;

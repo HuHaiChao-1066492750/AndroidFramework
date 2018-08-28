@@ -65,4 +65,9 @@ dependencies {
     //RxLifecycle:管理Retrofit生命周期
     compile "com.trello.rxlifecycle2:rxlifecycle:$versionName_rxlifecycle2"
     compile "com.trello.rxlifecycle2:rxlifecycle-components:$versionName_rxlifecycle2"
+
+    //内存泄漏检测
+//    debugCompile "com.squareup.leakcanary:leakcanary-android:$versionName_leakcanary"
+//    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$versionName_leakcanary"
+
 }

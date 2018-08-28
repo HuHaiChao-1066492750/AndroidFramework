@@ -8,12 +8,17 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 
+import com.blankj.utilcode.constant.PermissionConstants;
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.CrashUtils;
-import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PermissionUtils;
+import com.blankj.utilcode.util.ProcessUtils;
 import com.blankj.utilcode.util.Utils;
 import com.huhaichao.framework.utils.CacheManager;
 
@@ -26,11 +31,12 @@ import java.util.List;
  * Created by HuHaiChao on 2018/6/1.
  */
 
-public class BaseApplication extends Application {
-    private static final String TAG = "BaseApplication";
-    private static BaseApplication mBaseApplication;
+public class IBaseApplication extends Application {
+    private static final String TAG = "IBaseApplication";
+    private static IBaseApplication mIBaseApplication;
     private static List<Activity> mActivityList = Collections.synchronizedList(new LinkedList<Activity>());
     private static WeakReference<Activity> mCurrentActivity;
+    private CrashUtils.OnCrashListener crashListener;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -40,7 +46,11 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mBaseApplication = this;
+        //检测当前进程名称是否为应用包名,为了只初始化一次应用配置
+        if (!ProcessUtils.getCurrentProcessName().equals(getPackageName())) {
+            return;
+        }
+        mIBaseApplication = this;
         // TODO: 2018/8/14 第三方SDK的初始化放线程里
         //工具类
         Utils.init(this);
@@ -50,21 +60,22 @@ public class BaseApplication extends Application {
         registerActivityListener();
     }
 
-    public static BaseApplication getApplication() {
-        return mBaseApplication;
+    public static IBaseApplication getApplication() {
+        return mIBaseApplication;
     }
 
-    //退出程序
+    /**
+     * 退出App
+     */
     public static void exit() {
-        if (mActivityList == null || mActivityList.isEmpty()) {
-            return;
-        }
-        for (Activity activity : mActivityList) {
-            if (null != activity) {
-                activity.finish();
-            }
-        }
-        android.os.Process.killProcess(android.os.Process.myPid());
+        AppUtils.exitApp();
+    }
+
+    /**
+     * 重启App
+     */
+    public static void relaunch() {
+        AppUtils.relaunchApp();
     }
 
     private void registerActivityListener() {
@@ -113,14 +124,10 @@ public class BaseApplication extends Application {
     }
 
     /**
-     * 获取当前Activity（栈中最后一个压入得）
+     * 获取当前Activity（最后一个入栈的）
      */
-    public static Activity getCurrentActivity() {
-        if (mActivityList == null || mActivityList.isEmpty()) {
-            return null;
-        }
-        Activity activity = mActivityList.get(mActivityList.size() - 1);
-        return activity;
+    public static Activity getTopActivity() {
+        return ActivityUtils.getTopActivity();
     }
 
     /**
@@ -152,24 +159,65 @@ public class BaseApplication extends Application {
                 .setStackOffset(0);// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
     }
 
-    // TODO: 2018/6/8 程序意外终止、crash崩溃之前,日志保存和上传服务器
+    public void requiresPermission() {
+        PermissionUtils.permission(PermissionConstants.STORAGE)
+                .rationale(new PermissionUtils.OnRationaleListener() {
+                    @Override
+                    public void rationale(ShouldRequest shouldRequest) {
+                        // TODO: 2018/8/28 添加选择对话框
+                        shouldRequest.again(true);
+                    }
+                })
+                .callback(new PermissionUtils.FullCallback() {
+                    @Override
+                    public void onGranted(List<String> permissionsGranted) {
+                        initCrash();
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                        if (!permissionsDeniedForever.isEmpty()) {
+                            // TODO: 2018/8/28 添加选择对话框
+                            PermissionUtils.launchAppDetailsSettings();
+                        }
+                    }
+                }).request();
+    }
+
+    /**
+     * 程序意外终止、crash崩溃之前,日志保存和上传服务器
+     */
     @SuppressLint("MissingPermission")
     private void initCrash() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            requiresPermission();
             return;
         }
-        CrashUtils.init(new CrashUtils.OnCrashListener() {
+        CrashUtils.init(CacheManager.getInstance().getLogFilesPath(), new CrashUtils.OnCrashListener() {
             @Override
             public void onCrash(String crashInfo, Throwable e) {
                 LogUtils.e(crashInfo);
+                // TODO: 2018/8/27 用户提示信息
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Looper.prepare();
+                        Toast.makeText(getApplication(), "程序出现异常，即将重启", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                }.start();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e1) {
+                }
                 AppUtils.relaunchApp();
+                // TODO: 2018/8/28 跳转到自定义崩溃页
+//                Intent intent = new Intent();
+//                intent.setClass(getApplication(), BitmapActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
             }
         });
     }

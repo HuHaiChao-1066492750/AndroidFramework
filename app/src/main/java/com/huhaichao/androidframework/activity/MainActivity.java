@@ -10,9 +10,9 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.huhaichao.androidframework.R;
+import com.huhaichao.androidframework.base.BaseFragment;
 import com.huhaichao.androidframework.fragment.UtilsFragment;
 import com.huhaichao.androidframework.base.BaseActivity;
-import com.huhaichao.androidframework.base.BaseFragment;
 import com.huhaichao.androidframework.fragment.ViewFragment;
 
 import java.util.ArrayList;

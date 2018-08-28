@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import com.huhaichao.framework.R;
-import com.huhaichao.framework.base.BaseApplication;
+import com.huhaichao.framework.base.IBaseApplication;
 import com.huhaichao.framework.widget.CustomNotifyDialog;
 
 import io.reactivex.Observer;
@@ -27,7 +27,7 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
                                                          //加入生命周期解决问题
 
     public HttpObserverListener(int requestCode, HttpRequestCallback httpRequestCallback) {
-        this.mContext = BaseApplication.getActivityReference().get();//注意内存泄漏
+        this.mContext = IBaseApplication.getActivityReference().get();//注意内存泄漏
         this.requestCode = requestCode;
         this.httpRequestCallback = httpRequestCallback;
     }

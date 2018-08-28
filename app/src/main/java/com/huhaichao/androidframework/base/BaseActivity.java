@@ -12,14 +12,14 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.blankj.utilcode.util.ScreenUtils;
-import com.huhaichao.framework.base.RxBaseActivity;
+import com.huhaichao.framework.base.IRxIBaseActivity;
 import com.huhaichao.framework.network.HttpRequestCallback;
 import com.huhaichao.framework.widget.CustomDialog;
 
 import butterknife.ButterKnife;
 
 
-public abstract class BaseActivity extends RxBaseActivity implements HttpRequestCallback<JSONObject> {
+public abstract class BaseActivity extends IRxIBaseActivity implements HttpRequestCallback<JSONObject> {
     protected View mContentView;
     protected Activity mActivity;
 
