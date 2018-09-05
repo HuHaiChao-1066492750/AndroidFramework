@@ -6,9 +6,10 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 
 /**
  * Created by Administrator on 2018/1/16.
+ * @author HuHaiChao
  */
 
-public abstract class IRxIBaseFragment extends RxFragment implements IBaseView {
+public abstract class BaseRxFragment extends RxFragment implements IBaseView {
     /**
      * 绑定生命周期
      */

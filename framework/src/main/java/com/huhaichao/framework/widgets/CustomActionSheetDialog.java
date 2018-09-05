@@ -1,4 +1,4 @@
-package com.huhaichao.framework.widget;
+package com.huhaichao.framework.widgets;
 
 import android.app.Dialog;
 import android.content.Context;

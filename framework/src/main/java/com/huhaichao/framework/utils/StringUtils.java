@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
  */
 
 public class StringUtils {
-
     /**
      * 判断字符串是否全为数字
      */
@@ -15,8 +14,4 @@ public class StringUtils {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
     }
-
-    /**
-     *
-     */
 }

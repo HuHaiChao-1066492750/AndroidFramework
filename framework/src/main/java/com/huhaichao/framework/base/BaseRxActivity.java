@@ -4,7 +4,10 @@ import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
-public abstract class IRxIBaseActivity extends RxAppCompatActivity implements IBaseView {
+/**
+ * @author HuHaiChao
+ */
+public abstract class BaseRxActivity extends RxAppCompatActivity implements IBaseView {
     /**
      * 绑定生命周期
      */

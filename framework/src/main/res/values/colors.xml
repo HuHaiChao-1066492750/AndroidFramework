@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFF</color>
+    <color name="common_view">#E8E8E8</color>
+
+    <!-- CustomDialog -->
+    <color name="custom_dialog_title">#333333</color>
+    <color name="custom_dialog_message">#333333</color>
+    <color name="custom_dialog_button_positive">#3fb1fe</color>
+    <color name="custom_dialog_button_negative">#999999</color>
+
 </resources>

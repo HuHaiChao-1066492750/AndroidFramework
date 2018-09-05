@@ -6,14 +6,13 @@
     android:orientation="vertical">
 
     <Button
-    android:id="@+id/fragment_utils_bt_1"
+    android:id="@+id/fragment_widgets_bt_toast"
     android:layout_width="180dp"
     android:layout_height="wrap_content"
-    android:text="网络请求" />
+    android:text="Toast" />
     <Button
-        android:id="@+id/fragment_utils_bt_2"
+        android:id="@+id/activity_main1_bt_2"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="获取前台线程的包名" />
-
 </LinearLayout>

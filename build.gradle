@@ -7,6 +7,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
 
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath "com.jakewharton:butterknife-gradle-plugin:8.4.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -17,6 +19,18 @@ allprojects {
         jcenter()
         maven { url "https://maven.google.com" }
     }
+
+    //解决support版本冲突
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion supportVersion
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
@@ -24,20 +38,21 @@ task clean(type: Delete) {
 }
 
 ext {
-    buildToolsVersion = '27.0.3'
+    buildToolsVersion = '28.0.2'
 
     versionCode = 1
     versionName = '1.0'
     libMinSdkVersion = 14
     appMinSdkVersion = 16
-    targetSdkVersion = 27
-    compileSdkVersion = 27
+    targetSdkVersion = 28
+    compileSdkVersion = 28
 
     //support
     supportVersion = '25.3.1'
 
     //注解
-    versionName_butterknife = '8.8.1'
+//    versionName_butterknife = '8.8.1'
+    versionName_butterknife = '8.4.0' //3.0问题
 
     //网络 rxjava2+retrofit2
     versionName_rxjava2 = '2.1.14'
@@ -59,8 +74,14 @@ ext {
     versionName_gif = '1.2.12'
 
     //工具类
-    versionName_utilcode = '1.18.0'
+    versionName_utilcode = '1.19.3'
 
     //内存泄漏检测
     versionName_leakcanary = '1.6.1'
+
+    //eventbus
+    versionName_eventbus = '3.1.1'
+
+    //slidr
+    versionName_slidr = '2.0.6'
 }

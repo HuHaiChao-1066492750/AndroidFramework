@@ -1,13 +1,20 @@
-package com.huhaichao.androidframework.activity;
+package com.huhaichao.androidframework.fragment;
 
 import android.os.Bundle;
 import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
 import com.huhaichao.androidframework.R;
-import com.huhaichao.androidframework.base.BaseActivity;
+import com.huhaichao.androidframework.base.BaseRxFragment;
 
-public class BitmapActivity extends BaseActivity {
+/**
+ * Created by huhaichao on 2018/3/12.
+ */
+
+public class ViewRxFragment extends BaseRxFragment {
+    public static ViewRxFragment newInstance() {
+        return new ViewRxFragment();
+    }
 
     @Override
     public void initData(Bundle bundle) {
@@ -16,7 +23,7 @@ public class BitmapActivity extends BaseActivity {
 
     @Override
     public int bindLayout() {
-        return R.layout.activity_bitmap;
+        return R.layout.fragment_view;
     }
 
     @Override
@@ -26,7 +33,6 @@ public class BitmapActivity extends BaseActivity {
 
     @Override
     public void doBusiness() {
-
 
     }
 

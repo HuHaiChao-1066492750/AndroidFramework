@@ -7,6 +7,6 @@
     android:pivotY="50.0%"
     android:repeatMode="restart"
     android:toDegrees="360.0" 
-    android:drawable="@drawable/custom_dialog_notify_loading_progress_bg">
+    android:drawable="@mipmap/custom_dialog_notify_loading_progress_bg">
 
 </animated-rotate>

@@ -1,8 +1,9 @@
-package com.huhaichao.framework.widget;
+package com.huhaichao.framework.widgets;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,7 +16,7 @@ import com.huhaichao.framework.R;
 /**
  * 提示对话框
  */
-public class CustomNotifyDialog extends Dialog {
+public class CustomHintDialog extends Dialog {
     /**
      * 不显示任何icon
      */
@@ -44,7 +45,7 @@ public class CustomNotifyDialog extends Dialog {
     private ProgressBar progressBar;
     private ImageView imageView;
 
-    public CustomNotifyDialog(Context context) {
+    public CustomHintDialog(Context context) {
         super(context, R.style.CustomTipDialog);
         this.context = context;
     }
@@ -57,7 +58,7 @@ public class CustomNotifyDialog extends Dialog {
 
     public void init() {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.custom_dialog_notify, null);
+        View view = inflater.inflate(R.layout.custom_dialog_hint, null);
         setContentView(view);
 //        gifView = view.findViewById(R.id.view_custom_progress_dialog_gif);
         progressBar = (ProgressBar) view.findViewById(R.id.view_custom_progress_dialog_progress);
@@ -80,31 +81,33 @@ public class CustomNotifyDialog extends Dialog {
 //                }
                 //使用Glide
                 progressBar.setVisibility(View.GONE);
-                Glide.with(context).load(R.drawable.custom_dialog_notify_loading_progress).into(imageView);
+                Glide.with(context).load(R.mipmap.custom_dialog_notify_loading_progress).into(imageView);
                 imageView.setVisibility(View.VISIBLE);
                 break;
             case ICON_TYPE_SUCCESS:
 //                gifView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
-                imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.custom_dialog_notify_done));
+                imageView.setImageDrawable(ContextCompat.getDrawable(context,R.mipmap.custom_dialog_notify_done));
                 imageView.setVisibility(View.VISIBLE);
                 break;
             case ICON_TYPE_FAIL:
 //                gifView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
-                imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.custom_dialog_notify_error));
+                imageView.setImageDrawable(ContextCompat.getDrawable(context,R.mipmap.custom_dialog_notify_error));
                 imageView.setVisibility(View.VISIBLE);
                 break;
             case ICON_TYPE_INFO:
 //                gifView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
-                imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.custom_dialog_notify_info));
+                imageView.setImageDrawable(ContextCompat.getDrawable(context,R.mipmap.custom_dialog_notify_info));
                 imageView.setVisibility(View.VISIBLE);
                 break;
             case ICON_TYPE_NOTHING:
 //                gifView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
                 imageView.setVisibility(View.GONE);
+                break;
+            default:
                 break;
         }
 

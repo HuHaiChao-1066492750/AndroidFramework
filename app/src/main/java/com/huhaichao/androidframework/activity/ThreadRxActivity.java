@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
 import com.huhaichao.androidframework.R;
-import com.huhaichao.androidframework.base.BaseActivity;
+import com.huhaichao.androidframework.base.BaseRxActivity;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class ThreadActivity extends BaseActivity {
+public class ThreadRxActivity extends BaseRxActivity {
     @BindView(R.id.activity_thread_bt_1)
     protected Button activity_thread_bt_1;
 
@@ -33,17 +33,23 @@ public class ThreadActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState, View contentView) {
-
+        activity_thread_bt_1.setOnClickListener(this);
     }
 
     @Override
     public void doBusiness() {
-        asyncTask();
+//        asyncTask();
     }
 
     @Override
     public void onWidgetClick(View view) {
-
+        switch (view.getId()) {
+            case R.id.activity_thread_bt_1:
+                startActivity(new Intent(this, MainRxActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

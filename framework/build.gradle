@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -36,7 +38,7 @@ dependencies {
 
 //    注解butterknife
     compile "com.jakewharton:butterknife:$versionName_butterknife"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$versionName_butterknife"
+    apt "com.jakewharton:butterknife-compiler:$versionName_butterknife"
 
     //网络 rxjava2+retrofit2
     compile "io.reactivex.rxjava2:rxjava:$versionName_rxjava2"
@@ -67,7 +69,11 @@ dependencies {
     compile "com.trello.rxlifecycle2:rxlifecycle-components:$versionName_rxlifecycle2"
 
     //内存泄漏检测
-//    debugCompile "com.squareup.leakcanary:leakcanary-android:$versionName_leakcanary"
-//    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$versionName_leakcanary"
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$versionName_leakcanary"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$versionName_leakcanary"
 
+    //eventbus
+    compile "org.greenrobot:eventbus:$versionName_eventbus"
+
+    compile "com.r0adkll:slidableactivity:$versionName_slidr"
 }

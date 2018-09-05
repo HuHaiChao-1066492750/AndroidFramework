@@ -34,7 +34,7 @@ public class CollectionUtilsTest {
     /**
      * 数组转列表
      */
-    public static <T> List<T> ArrayToList(T[] array) {
+    public static <T> List<T> arrayToList(T[] array) {
         if (array.length < 0) {
             return null;
         }
@@ -46,9 +46,9 @@ public class CollectionUtilsTest {
      */
     public static void main(String[] args) {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        System.out.println(com.blankj.utilcode.util.TimeUtils.millis2String(Long.parseLong("1534394598664"),sdf));
-        String shoumai="12:43:18";
-        String danqian=com.blankj.utilcode.util.TimeUtils.millis2String(Long.parseLong("1534394598664"),sdf);
+        System.out.println(com.blankj.utilcode.util.TimeUtils.millis2String(Long.parseLong("1534394598664"), sdf));
+        String shoumai = "12:43:18";
+        String danqian = com.blankj.utilcode.util.TimeUtils.millis2String(Long.parseLong("1534394598664"), sdf);
         System.out.println(shoumai.compareTo(danqian));
     }
 
@@ -65,27 +65,20 @@ public class CollectionUtilsTest {
         //经典方式
         int result = 17;
         result = 31 * result + mContext.hashCode();
-//        result = 31 * result + name.hashCode();
-//        result = 31 * result + age;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + age;
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
         if (obj != null && obj.getClass() == CollectionUtilsTest.class) {
             CollectionUtilsTest c = (CollectionUtilsTest) obj;
             return this.mContext == c.mContext;
         }
         return false;
-    }
-
-    public void test() {
-        Map<CollectionUtilsTest, String> map = new HashMap<>();
-        map.put(new CollectionUtilsTest(), "66");
-        map.containsValue("66");
-        List<Map<String, String>> list = new ArrayList<>();
-
     }
 }

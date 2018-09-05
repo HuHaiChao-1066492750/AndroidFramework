@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huhaichao.framework.R;
-import com.huhaichao.framework.widget.CustomPopupMenuDialog;
+import com.huhaichao.framework.widgets.CustomPopupMenuDialog;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class PopupMenuAdapter extends RecyclerView.Adapter<PopupMenuAdapter.View
     private int paddingTop = 0;
     private int paddingRight = 0;
     private int paddingBottom = 0;
-    private CustomPopupMenuDialog.onMenuItemClickListener onMenuItemClickListener;
+    private CustomPopupMenuDialog.OnMenuItemClickListener onMenuItemClickListener;
 
     public PopupMenuAdapter(Context context) {
         this.context = context;
@@ -51,15 +51,17 @@ public class PopupMenuAdapter extends RecyclerView.Adapter<PopupMenuAdapter.View
         viewHolder.title.setText(titleList.get(position));
 
         //是否显示图标(默认为空不显示)
-        if (isShowIcon)
+        if (isShowIcon) {
             viewHolder.icon.setImageResource(iconList.get(position));
-        else
+        } else {
             viewHolder.icon.setVisibility(View.GONE);
+        }
 
         //是否显示分割线(默认不画最后一条)
         if (isShowLine) {
-            if (position == titleList.size() - 1)
+            if (position == titleList.size() - 1) {
                 viewHolder.line.setVisibility(View.INVISIBLE);
+            }
         } else {
             viewHolder.line.setVisibility(View.GONE);
         }
@@ -96,8 +98,8 @@ public class PopupMenuAdapter extends RecyclerView.Adapter<PopupMenuAdapter.View
         notifyDataSetChanged();
     }
 
-    public void isShowIcon(boolean isShowIcon){
-        this.isShowIcon=isShowIcon;
+    public void isShowIcon(boolean isShowIcon) {
+        this.isShowIcon = isShowIcon;
         notifyDataSetChanged();
     }
 
@@ -130,7 +132,7 @@ public class PopupMenuAdapter extends RecyclerView.Adapter<PopupMenuAdapter.View
     /**
      * 回调接口
      */
-    public void setOnMenuItemClickListener(CustomPopupMenuDialog.onMenuItemClickListener listener) {
+    public void setOnMenuItemClickListener(CustomPopupMenuDialog.OnMenuItemClickListener listener) {
         this.onMenuItemClickListener = listener;
     }
 

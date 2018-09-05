@@ -72,7 +72,7 @@ public class CacheManager {
     }
 
     /**
-     * 获取内存缓存目录地址
+     * 获取磁盘缓存目录地址
      */
     public String getDiskCachePath() {
         return getDiskCacheDir().getAbsolutePath();

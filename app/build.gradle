@@ -36,11 +36,12 @@ dependencies {
 //    compile "com.github.bumptech.glide:glide:$versionName_glide"
 //    annotationProcessor "com.github.bumptech.glide:compiler:$versionName_glide"
 
-    //注解butterknife 放模块无效
     compile "com.jakewharton:butterknife:$versionName_butterknife"
     annotationProcessor "com.jakewharton:butterknife-compiler:$versionName_butterknife"
 
     //底部导航栏
     compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
     compile project(path: ':framework')
+
+//    compile 'com.github.chrisbanes:PhotoView:2.0.0'
 }

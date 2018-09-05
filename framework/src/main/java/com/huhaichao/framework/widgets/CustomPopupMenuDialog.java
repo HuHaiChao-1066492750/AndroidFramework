@@ -1,8 +1,9 @@
-package com.huhaichao.framework.widget;
+package com.huhaichao.framework.widgets;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +12,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
+import com.blankj.utilcode.util.ScreenUtils;
 import com.huhaichao.framework.R;
 import com.huhaichao.framework.adapter.PopupMenuAdapter;
-import com.huhaichao.framework.utils.DisplayHelper;
 
 import java.util.List;
 
@@ -67,10 +68,11 @@ public class CustomPopupMenuDialog extends PopupWindow {
         popupMenuAdapter.setTitleList(titleList);
         mRecyclerView.setAdapter(popupMenuAdapter);
         mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         mPopupWindow.setAnimationStyle(R.style.TRM_ANIM_STYLE);
         mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        mPopupWindow.showAsDropDown(contentView, contentView.getWidth() - mPopupWindow.getContentView().getMeasuredWidth() + xOff, yOff);//view和popupwindow左下角对齐
+        //view和popupwindow左下角对齐
+        mPopupWindow.showAsDropDown(contentView, contentView.getWidth() - mPopupWindow.getContentView().getMeasuredWidth() + xOff, yOff);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -80,6 +82,7 @@ public class CustomPopupMenuDialog extends PopupWindow {
         return this;
     }
 
+    @Override
     public void dismiss() {
         mPopupWindow.dismiss();
     }
@@ -94,11 +97,11 @@ public class CustomPopupMenuDialog extends PopupWindow {
     /**
      * item点击回调接口
      */
-    public interface onMenuItemClickListener {
+    public interface OnMenuItemClickListener {
         void onMenuItemClick(int itemPosition);
     }
 
-    public void setOnMenuItemClickListener(onMenuItemClickListener listener) {
+    public void setOnMenuItemClickListener(OnMenuItemClickListener listener) {
         popupMenuAdapter.setOnMenuItemClickListener(listener);
     }
 
@@ -130,20 +133,20 @@ public class CustomPopupMenuDialog extends PopupWindow {
         }
 
         public Builder setItemLayoutParams(int width, int height) {
-            customPopupMenuDialog.width = (int) (width * DisplayHelper.DENSITY);
-            customPopupMenuDialog.height = (int) (height * DisplayHelper.DENSITY);
+            customPopupMenuDialog.width = (int) (width * ScreenUtils.getScreenDensity());
+            customPopupMenuDialog.height = (int) (height * ScreenUtils.getScreenDensity());
             return this;
         }
 
         public Builder setItemLayoutPadding(int paddingTop, int paddingBottom, int paddingLeft, int paddingRight) {
-            customPopupMenuDialog.paddingTop = (int) (paddingTop * DisplayHelper.DENSITY);
-            customPopupMenuDialog.paddingBottom = (int) (paddingBottom * DisplayHelper.DENSITY);
-            customPopupMenuDialog.paddingLeft = (int) (paddingLeft * DisplayHelper.DENSITY);
-            customPopupMenuDialog.paddingRight = (int) (paddingRight * DisplayHelper.DENSITY);
+            customPopupMenuDialog.paddingTop = (int) (paddingTop * ScreenUtils.getScreenDensity());
+            customPopupMenuDialog.paddingBottom = (int) (paddingBottom * ScreenUtils.getScreenDensity());
+            customPopupMenuDialog.paddingLeft = (int) (paddingLeft * ScreenUtils.getScreenDensity());
+            customPopupMenuDialog.paddingRight = (int) (paddingRight * ScreenUtils.getScreenDensity());
             return this;
         }
 
-        public Builder setOnMenuItemClickListener(onMenuItemClickListener listener) {
+        public Builder setOnMenuItemClickListener(OnMenuItemClickListener listener) {
             customPopupMenuDialog.setOnMenuItemClickListener(listener);
             return this;
         }

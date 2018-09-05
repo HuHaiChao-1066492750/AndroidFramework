@@ -14,7 +14,7 @@ public class ClipboardUtils {
     /**
      * 复制内容到粘贴板
      */
-    public static void CopyTextToClipboard(String text) {
+    public static void copyTextToClipboard(String text) {
         ClipboardManager mClipboardManager = (ClipboardManager) IBaseApplication.getActivityReference().get().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData mClipData = ClipData.newPlainText(text, text);
         mClipboardManager.setPrimaryClip(mClipData);
@@ -25,8 +25,9 @@ public class ClipboardUtils {
      */
     public static String getTextFromClipboard() {
         ClipboardManager mClipboardManager = (ClipboardManager) IBaseApplication.getActivityReference().get().getSystemService(Context.CLIPBOARD_SERVICE);
-        if (!mClipboardManager.hasPrimaryClip())
+        if (!mClipboardManager.hasPrimaryClip()) {
             return "";
+        }
         ClipData mClipData = mClipboardManager.getPrimaryClip();
         ClipData.Item item = mClipData.getItemAt(0);
         return item.getText().toString();

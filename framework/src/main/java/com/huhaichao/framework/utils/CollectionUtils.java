@@ -58,15 +58,6 @@ public class CollectionUtils {
     }
 
     /**
-     * Map转Array
-     */
-    public static <K, V> V[] mapToArray(Map<K, V> map) {
-        Collection<V> collection = map.values();
-        int size = collection.size();
-        return (V[]) collection.toArray();
-    }
-
-    /**
      * 排序
      */
     public static <T> void sort(List<T> list, Comparator<T> comparator) {

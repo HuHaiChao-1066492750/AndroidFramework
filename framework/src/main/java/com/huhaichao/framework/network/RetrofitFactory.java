@@ -178,7 +178,7 @@ public class RetrofitFactory {
                 LogUtils.dTag(TAG,"<-- END HTTP (encoded body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
-                source.request(Long.MAX_VALUE); // Buffer the entire body.
+                source.request(Long.MAX_VALUE);
                 Buffer buffer = source.buffer();
 
                 Long gzippedLength = null;
@@ -237,15 +237,15 @@ public class RetrofitFactory {
                 }
                 return true;
             } catch (EOFException e) {
-                return false; // Truncated UTF-8 sequence.
+                return false;
             }
         }
 
         private boolean bodyHasUnknownEncoding(Headers headers) {
             String contentEncoding = headers.get("Content-Encoding");
             return contentEncoding != null
-                    && !contentEncoding.equalsIgnoreCase("identity")
-                    && !contentEncoding.equalsIgnoreCase("gzip");
+                    && !"identity".equalsIgnoreCase(contentEncoding)
+                    && !"gzip".equalsIgnoreCase(contentEncoding);
         }
     };
 

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ProcessUtils;
 import com.blankj.utilcode.util.Utils;
 import com.huhaichao.framework.utils.CacheManager;
+import com.huhaichao.framework.widgets.CustomDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -159,6 +161,7 @@ public class IBaseApplication extends Application {
                 .setStackOffset(0);// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
     }
 
+    //放activity
     public void requiresPermission() {
         PermissionUtils.permission(PermissionConstants.STORAGE)
                 .rationale(new PermissionUtils.OnRationaleListener() {
@@ -178,7 +181,17 @@ public class IBaseApplication extends Application {
                     public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                         if (!permissionsDeniedForever.isEmpty()) {
                             // TODO: 2018/8/28 添加选择对话框
-                            PermissionUtils.launchAppDetailsSettings();
+                            new CustomDialog.Builder(getApplicationContext())
+                                    .setMessage("需要权限，是否去设置？")
+                                    .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            PermissionUtils.launchAppDetailsSettings();
+                                        }
+                                    })
+                                    .setNegativeButton("取消", null)
+                                    .create()
+                                    .show();
                         }
                     }
                 }).request();
@@ -190,7 +203,7 @@ public class IBaseApplication extends Application {
     @SuppressLint("MissingPermission")
     private void initCrash() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requiresPermission();
+//            requiresPermission();
             return;
         }
         CrashUtils.init(CacheManager.getInstance().getLogFilesPath(), new CrashUtils.OnCrashListener() {

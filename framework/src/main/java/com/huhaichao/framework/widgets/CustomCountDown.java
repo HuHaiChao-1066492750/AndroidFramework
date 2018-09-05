@@ -1,4 +1,4 @@
-package com.huhaichao.framework.widget;
+package com.huhaichao.framework.widgets;
 
 import android.graphics.Color;
 import android.os.CountDownTimer;

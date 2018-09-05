@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 
 import com.huhaichao.framework.R;
 import com.huhaichao.framework.base.IBaseApplication;
-import com.huhaichao.framework.widget.CustomNotifyDialog;
+import com.huhaichao.framework.widgets.CustomHintDialog;
 
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -23,7 +23,7 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
     private HttpRequestCallback httpRequestCallback;
     private Disposable disposable = null;//注意内存泄漏
     private int requestCode;
-    private CustomNotifyDialog customNotifyDialog = null;//横竖屏切换有问题,context不存在了，回调时对customNotifyDialog的操作有问题
+    private CustomHintDialog customHintDialog = null;//横竖屏切换有问题,context不存在了，回调时对customNotifyDialog的操作有问题
                                                          //加入生命周期解决问题
 
     public HttpObserverListener(int requestCode, HttpRequestCallback httpRequestCallback) {
@@ -35,18 +35,18 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
     @Override
     public void onSubscribe(@NonNull Disposable d) {
         this.disposable = d;
-        if (customNotifyDialog == null) {
-            customNotifyDialog = new CustomNotifyDialog(mContext);
-            customNotifyDialog.setIconType(CustomNotifyDialog.ICON_TYPE_LOADING);
-            customNotifyDialog.setMessage(mContext.getString(R.string.common_loading));
-            customNotifyDialog.setCanceledOnTouchOutside(false);
-            customNotifyDialog.setCancelable(true);
-//            customNotifyDialog.setOnCancelListener();
-            customNotifyDialog.setOnDismissListener(this);
+        if (customHintDialog == null) {
+            customHintDialog = new CustomHintDialog(mContext);
+            customHintDialog.setIconType(CustomHintDialog.ICON_TYPE_LOADING);
+            customHintDialog.setMessage(mContext.getString(R.string.common_loading));
+            customHintDialog.setCanceledOnTouchOutside(false);
+            customHintDialog.setCancelable(true);
+//            customHintDialog.setOnCancelListener();
+            customHintDialog.setOnDismissListener(this);
         }
 
-        if (!customNotifyDialog.isShowing()) {
-            customNotifyDialog.show();
+        if (!customHintDialog.isShowing()) {
+            customHintDialog.show();
         }
     }
 
@@ -58,25 +58,25 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
     @Override
     public void onError(@NonNull Throwable e) {
         // TODO: 2018/6/8  根据网络错误给予对应的提示
-        if (customNotifyDialog != null && customNotifyDialog.isShowing()) {
-//            Activity activity = customNotifyDialog.getOwnerActivity();
+        if (customHintDialog != null && customHintDialog.isShowing()) {
+//            Activity activity = customHintDialog.getOwnerActivity();
 //            if (activity != null && !activity.isFinishing()) {
-            customNotifyDialog.dismiss();
+            customHintDialog.dismiss();
 //            }
         }
-        customNotifyDialog = null;
+        customHintDialog = null;
         httpRequestCallback.onFailureCallback(requestCode, e);
     }
 
     @Override
     public void onComplete() {
-        if (customNotifyDialog != null && customNotifyDialog.isShowing()) {
-//            Activity activity = customNotifyDialog.getOwnerActivity();
+        if (customHintDialog != null && customHintDialog.isShowing()) {
+//            Activity activity = customHintDialog.getOwnerActivity();
 //            if (activity != null && !activity.isFinishing()) {
-            customNotifyDialog.dismiss();
+            customHintDialog.dismiss();
 //            }
         }
-        customNotifyDialog = null;
+        customHintDialog = null;
     }
 
     //如果处于订阅状态，则取消订阅
