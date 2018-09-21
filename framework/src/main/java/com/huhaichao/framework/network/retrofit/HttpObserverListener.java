@@ -1,4 +1,4 @@
-package com.huhaichao.framework.network;
+package com.huhaichao.framework.network.retrofit;
 
 
 import android.content.Context;
@@ -13,21 +13,29 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 /**
- * Created by HuHaiChao on 2018/6/1.
  * Rxjava2.0开始:Observer
+ *
+ * @author HuHaiChao
  */
 
 public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnDismissListener {
     private static final String TAG = "HttpObserverListener";
     private Context mContext;
     private HttpRequestCallback httpRequestCallback;
-    private Disposable disposable = null;//注意内存泄漏
+    /**
+     * 是否处于订阅状态
+     * 注意内存泄漏
+     */
+    private Disposable disposable = null;
     private int requestCode;
-    private CustomHintDialog customHintDialog = null;//横竖屏切换有问题,context不存在了，回调时对customNotifyDialog的操作有问题
-                                                         //加入生命周期解决问题
+    /**
+     * 横竖屏切换有问题,context不存在了，回调时对customNotifyDialog的操作有问题
+     * 加入生命周期解决问题
+     */
+    private CustomHintDialog customHintDialog = null;
 
     public HttpObserverListener(int requestCode, HttpRequestCallback httpRequestCallback) {
-        this.mContext = IBaseApplication.getActivityReference().get();//注意内存泄漏
+        this.mContext = IBaseApplication.getActivityReference().get();
         this.requestCode = requestCode;
         this.httpRequestCallback = httpRequestCallback;
     }
@@ -41,7 +49,6 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
             customHintDialog.setMessage(mContext.getString(R.string.common_loading));
             customHintDialog.setCanceledOnTouchOutside(false);
             customHintDialog.setCancelable(true);
-//            customHintDialog.setOnCancelListener();
             customHintDialog.setOnDismissListener(this);
         }
 
@@ -79,11 +86,10 @@ public class HttpObserverListener<T> implements Observer<T>, DialogInterface.OnD
         customHintDialog = null;
     }
 
-    //如果处于订阅状态，则取消订阅
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         if (disposable != null) {
-//            Logger.t(TAG).d("处于订阅状态");
             disposable.dispose();
         }
         disposable = null;

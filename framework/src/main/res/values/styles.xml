@@ -63,4 +63,6 @@
         <item name="android:windowEnterAnimation">@anim/custom_dialog_slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/custom_dialog_slide_out_bottom</item>
     </style>
+
+    <!-- TextStyle -->
 </resources>

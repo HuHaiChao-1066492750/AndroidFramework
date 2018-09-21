@@ -10,20 +10,28 @@ import com.blankj.utilcode.util.Utils;
 import java.io.File;
 
 /**
- * Created by HuHaiChao on 2018/7/4.
+ * @author HuHaiChao
  */
 
 public class CacheManager {
     private static final String TAG = "CacheManager";
     private static volatile CacheManager cacheManager = null;
-    public static final String PICTURE = "picture";
-    public static final String WEB = "web";
-    public static final String LOG = "log";
+    private static final String PICTURE = "picture";
+    private static final String WEB = "web";
+    private static final String LOG = "log";
+    private static final String NETWORK = "network";
+    private static final String APPCACHE = "appcache";
+    private static final String DATABASES = "databases";
+    private static final String GEOLOCATION = "geolocation";
 
     private CacheManager() {
     }
 
-    //双重检验锁 DCL
+    /**
+     * 双重检验锁 DCL
+     *
+     * @return
+     */
     public static CacheManager getInstance() {
         if (cacheManager == null) {
             synchronized (CacheManager.class) {
@@ -56,7 +64,7 @@ public class CacheManager {
     /**
      * 获取当前App专属的缓存路径
      */
-    public String getAppCachePath() {
+    public String getCachePath() {
         if (SDCardUtils.isSDCardEnableByEnvironment()) {
             return getDiskCachePath();
         } else {
@@ -82,7 +90,7 @@ public class CacheManager {
      * 创建指定缓存目录
      */
     public File createCacheDir(String cacheDirName) {
-        File file = new File(getAppCachePath(), cacheDirName);
+        File file = new File(getCachePath(), cacheDirName);
         if (FileUtils.createOrExistsDir(file)) {
             return file;
         }
@@ -197,7 +205,7 @@ public class CacheManager {
     /**
      * 获取当前App专属files路径
      */
-    public String getAppFilesPath() {
+    public String getFilesPath() {
         if (SDCardUtils.isSDCardEnableByEnvironment()) {
             return Utils.getApp().getExternalFilesDir(null).getAbsolutePath();
         } else {
@@ -208,7 +216,7 @@ public class CacheManager {
     /**
      * 自动创建type目录，默认返回（type的）父目录
      */
-    public String getExternalFilesDir(String type) {
+    public String getFilesDirPath(String type) {
         //空白字符包括:空格,换行符,tab键
         if (StringUtils.isSpace(type)) {
             return null;
@@ -236,6 +244,34 @@ public class CacheManager {
      * 获取log目录路径
      */
     public String getLogFilesPath() {
-        return getExternalFilesDir(LOG);
+        return getFilesDirPath(LOG);
+    }
+
+    /**
+     * 获取网络缓存路径
+     */
+    public String getPragmeCachePath() {
+        return getCacheDirPath(NETWORK);
+    }
+
+    /**
+     * 获取H5缓存路径
+     */
+    public String getAppCachePath() {
+        return getCacheDirPath(APPCACHE);
+    }
+
+    /**
+     * 获取数据库缓存路径
+     */
+    public String getDatabasesPath() {
+        return getCacheDirPath(DATABASES);
+    }
+
+    /**
+     * 获取定位的数据库缓存路径
+     */
+    public String getGeolocation() {
+        return getCacheDirPath(GEOLOCATION);
     }
 }

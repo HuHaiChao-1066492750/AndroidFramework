@@ -2,7 +2,6 @@ package com.huhaichao.androidframework.activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
@@ -14,17 +13,13 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.blankj.utilcode.constant.PermissionConstants;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.PermissionUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.huhaichao.androidframework.R;
 import com.huhaichao.androidframework.base.BaseRxFragment;
 import com.huhaichao.androidframework.fragment.UtilsRxFragment;
 import com.huhaichao.androidframework.base.BaseRxActivity;
 import com.huhaichao.androidframework.fragment.ViewRxFragment;
 import com.huhaichao.androidframework.fragment.WidgetsRxFragment;
-import com.huhaichao.framework.event.NetworkEvent;
 import com.huhaichao.framework.event.UpdateEvent;
 import com.huhaichao.framework.widgets.CustomDialog;
 
@@ -41,8 +36,6 @@ public class MainRxActivity extends BaseRxActivity {
 
     @BindView(R.id.activity_main_bottom_navigation_bar)
     protected BottomNavigationBar activity_main_bottom_navigation_bar;
-    @BindView(R.id.floatingActionButton)
-    protected FloatingActionButton floatingActionButton;
     private TextBadgeItem messageBadgeItem;
     private ShapeBadgeItem shapeBadgeItem = new ShapeBadgeItem();
     private BottomNavigationItem bottomNavigationItem;
@@ -128,7 +121,7 @@ public class MainRxActivity extends BaseRxActivity {
 
     @Override
     public int bindLayout() {
-        return R.layout.activity_main;
+        return R.layout.activity_main_rx;
     }
 
     @Override

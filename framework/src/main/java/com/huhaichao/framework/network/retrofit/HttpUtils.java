@@ -1,4 +1,4 @@
-package com.huhaichao.framework.network;
+package com.huhaichao.framework.network.retrofit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers;
 
 
 /**
- * Created by HuHaiChao on 2018/6/1.
+ * @author HuHaiChao
  */
 
 public class HttpUtils {

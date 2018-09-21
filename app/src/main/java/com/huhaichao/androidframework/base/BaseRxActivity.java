@@ -18,7 +18,7 @@ import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.huhaichao.androidframework.R;
 import com.huhaichao.framework.event.NetworkEvent;
-import com.huhaichao.framework.network.HttpRequestCallback;
+import com.huhaichao.framework.network.retrofit.HttpRequestCallback;
 import com.huhaichao.framework.receiver.NetworkChangeReceiver;
 
 import org.greenrobot.eventbus.EventBus;

@@ -1,23 +1,17 @@
 package com.huhaichao.androidframework.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
-import com.blankj.utilcode.util.StringUtils;
 import com.huhaichao.androidframework.R;
-import com.huhaichao.androidframework.activity.BitmapRxActivity;
+import com.huhaichao.androidframework.activity.BrowserActivity;
+import com.huhaichao.androidframework.activity.WebViewRxActivity;
 import com.huhaichao.androidframework.base.BaseRxFragment;
-import com.huhaichao.framework.event.NetworkEvent;
-import com.huhaichao.framework.network.HttpObserverListener;
-import com.huhaichao.framework.network.HttpUtils;
-import com.huhaichao.framework.widgets.CustomDialog;
-import com.huhaichao.framework.widgets.CustomHintDialog;
-
-import org.greenrobot.eventbus.EventBus;
+import com.huhaichao.framework.network.retrofit.HttpObserverListener;
+import com.huhaichao.framework.network.retrofit.HttpUtils;
 
 import butterknife.BindView;
 
@@ -30,7 +24,10 @@ public class UtilsRxFragment extends BaseRxFragment {
     protected Button fragment_utils_bt_1;
     @BindView(R.id.fragment_utils_bt_2)
     protected Button fragment_utils_bt_2;
-
+    @BindView(R.id.fragment_utils_bt_web_view_1)
+    protected Button fragment_utils_bt_web_view_1;
+    @BindView(R.id.fragment_utils_bt_web_view_2)
+    protected Button fragment_utils_bt_web_view_2;
     private String text = "服务商不管以任何形式ThisThisThis要求ThisThisThis is test!线下交易，都存在This is test!诈骗的风险，请提高警惕。This is test!欢迎相互关注。有不对的地方望指出和包容。谢谢！ ";
 
     public static UtilsRxFragment newInstance() {
@@ -74,6 +71,8 @@ public class UtilsRxFragment extends BaseRxFragment {
     public void initView(Bundle savedInstanceState, View contentView) {
         fragment_utils_bt_1.setOnClickListener(this);
         fragment_utils_bt_2.setOnClickListener(this);
+        fragment_utils_bt_web_view_1.setOnClickListener(this);
+        fragment_utils_bt_web_view_2.setOnClickListener(this);
     }
 
     @Override
@@ -84,22 +83,33 @@ public class UtilsRxFragment extends BaseRxFragment {
     public void onWidgetClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_utils_bt_1:
-                new CustomDialog.Builder(getActivity())
-//                        .setTitle("智能家居")
-                        .setMessage(StringUtils.toDBC(text))
-                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                EventBus.getDefault().post(new NetworkEvent());
-                            }
-                        })
-                        .setNegativeButton("取消", null)
-                        .setCanceledOnTouchOutside(false)
-                        .create()
-                        .show();
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("memberId", "d091d6a3-f6ea-495c-bc4a-e954d3fd89b0");
+                HttpUtils.post(bindToLife(), "http://39.108.78.23:8080/xkzp-app-webapp/bsCoupon/getUnReadCouponByMemberId.json", jsonObject, new HttpObserverListener<JSONObject>(1002, this));
+//                new CustomDialog.Builder(getActivity())
+////                        .setTitle("智能家居")
+//                        .setMessage(StringUtils.toDBC(text))
+//                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                EventBus.getDefault().post(new NetworkEvent());
+//                            }
+//                        })
+//                        .setNegativeButton("取消", null)
+//                        .setCanceledOnTouchOutside(false)
+//                        .create()
+//                        .show();
                 break;
             case R.id.fragment_utils_bt_2:
-                startActivity(new Intent(getActivity(), BitmapRxActivity.class));
+//                startActivity(new Intent(getActivity(), BitmapRxActivity.class));
+                doRequest();
+            case R.id.fragment_utils_bt_web_view_1:
+                startActivity(new Intent(getActivity(), BrowserActivity.class));
+                break;
+            case R.id.fragment_utils_bt_web_view_2:
+                startActivity(new Intent(getActivity(), WebViewRxActivity.class));
+                break;
             default:
                 break;
         }

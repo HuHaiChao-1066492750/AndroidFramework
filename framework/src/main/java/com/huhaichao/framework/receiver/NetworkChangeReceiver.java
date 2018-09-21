@@ -8,6 +8,9 @@ import com.huhaichao.framework.event.NetworkEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+/**
+ * @author HuHaiChao
+ */
 public class NetworkChangeReceiver extends BroadcastReceiver {
     public NetworkChangeReceiver() {
     }

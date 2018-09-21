@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.blankj.utilcode.constant.PermissionConstants;
@@ -23,6 +24,7 @@ import com.blankj.utilcode.util.ProcessUtils;
 import com.blankj.utilcode.util.Utils;
 import com.huhaichao.framework.utils.CacheManager;
 import com.huhaichao.framework.widgets.CustomDialog;
+import com.tencent.smtt.sdk.QbSdk;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -60,6 +62,26 @@ public class IBaseApplication extends Application {
         initCrash();
         /**注册ActivityListener监听*/
         registerActivityListener();
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+
+            @Override
+            public void onViewInitFinished(boolean finished) {
+                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                LogUtils.eTag(TAG, " onViewInitFinished is " + finished);
+            }
+
+            @Override
+            public void onCoreInitFinished() {
+                LogUtils.eTag(TAG, " onCoreInitFinished  ");
+            }
+        };
+
+        //x5内核初始化接口
+        try {
+            QbSdk.initX5Environment(getApplicationContext(), cb);
+        } catch (Exception e) {
+            LogUtils.eTag(TAG, " exception = " + e.getMessage());
+        }
     }
 
     public static IBaseApplication getApplication() {

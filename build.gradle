@@ -74,7 +74,7 @@ ext {
     versionName_gif = '1.2.12'
 
     //工具类
-    versionName_utilcode = '1.19.3'
+    versionName_utilcode = '1.20.3'
 
     //内存泄漏检测
     versionName_leakcanary = '1.6.1'

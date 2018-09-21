@@ -2,12 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.huhaichao.androidframework">
 
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
-    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-    <!--<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
-    <!--&lt;!&ndash; <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />//&lt;!&ndash; 在SDCard中创建与删除文件权限 &ndash;&gt; &ndash;&gt;-->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
-    <!--<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
+    <!-- &lt;!&ndash; <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />//&lt;!&ndash; 在SDCard中创建与删除文件权限 &ndash;&gt; &ndash;&gt; -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
+
+    <!-- 硬件加速对X5视频播放非常重要，建议开启 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
+
 
     <application
         android:name="com.huhaichao.framework.base.IBaseApplication"
@@ -25,7 +30,13 @@
         </activity>
         <activity android:name=".activity.MessageRxActivity" />
         <activity android:name=".activity.ThreadRxActivity" />
-        <activity android:name=".activity.BitmapRxActivity"/>
+        <activity android:name=".activity.BitmapRxActivity" />
+        <activity
+            android:name=".activity.WebViewRxActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".activity.BrowserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
     </application>
 
 </manifest>

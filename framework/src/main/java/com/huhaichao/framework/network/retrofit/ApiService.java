@@ -1,4 +1,4 @@
-package com.huhaichao.framework.network;
+package com.huhaichao.framework.network.retrofit;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -21,14 +21,28 @@ import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
 /**
- * Created by HuHaiChao on 2018/6/1.
+ * @author HuHaiChao
  */
 
 public interface ApiService {
 
+    /**
+     * GET请求
+     *
+     * @param path
+     * @param params
+     * @return
+     */
     @GET
     Observable<JSONObject> get(@Url String path, @QueryMap Map<String, String> params);
 
+    /**
+     * POST请求
+     *
+     * @param path
+     * @param baseForm
+     * @return
+     */
     @POST
     Observable<JSONObject> post(@Url String path, @Body JSONObject baseForm);
 
@@ -37,7 +51,6 @@ public interface ApiService {
     @POST
     Observable<JSONObject> post(@Url String path, @FieldMap Map<String, Object> map);
 
-    // MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", "test.txt", file);
     @POST
     @Multipart
     Observable<JSONObject> testFileUpload2(@Url String path, @PartMap JSONObject baseForm, @Part MultipartBody.Part file);

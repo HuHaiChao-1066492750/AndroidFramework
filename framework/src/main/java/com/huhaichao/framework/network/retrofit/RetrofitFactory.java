@@ -1,20 +1,24 @@
-package com.huhaichao.framework.network;
+package com.huhaichao.framework.network.retrofit;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.NetworkUtils;
-import com.huhaichao.framework.base.IBaseApplication;
+import com.huhaichao.framework.utils.CacheManager;
 
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Connection;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
 import okhttp3.Headers;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -32,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
- * Created by HuHaiChao on 2018/6/1.
+ * @author HuHaiChao
  */
 
 public class RetrofitFactory {
@@ -45,6 +49,7 @@ public class RetrofitFactory {
     private static RetrofitFactory mRetrofitFactory;
     private static Retrofit mRetrofit;
     private static String cookie = "";
+    private List<Cookie> cookieStore;
 
     //单例模式
     private RetrofitFactory() {
@@ -61,35 +66,59 @@ public class RetrofitFactory {
         return mRetrofitFactory;
     }
 
-    //待：缓存 请求头部
     public <T> T create(final Class<T> cls) {
         if (mRetrofit == null) {
-            File cacheFile = new File(IBaseApplication.getApplication().getExternalCacheDir(), "Pragma");
+            File cacheFile = new File(CacheManager.getInstance().getPragmeCachePath());
             Cache cache = new Cache(cacheFile, 1024 * 1024 * 50);
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                    .retryOnConnectionFailure(true)//连接失败后是否重新连接
-                    .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)//设置超时时间
-                    .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)//设置读取超时时间
-                    .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)//设置写入超时时间
-                    .addInterceptor(headerInterceptor)//添加头部拦截器，在response调用一次，拦截器的添加有先后顺序
-                    .addNetworkInterceptor(cacheInterceptor)//添加网络拦截器(缓存)，在request和response分别调用一次
-                    .addInterceptor(loggerInterceptor)//添加日记拦截器，在response调用一次，，拦截器的添加有先后顺序
+                    //连接失败后是否重新连接
+//                    .retryOnConnectionFailure(true)
+                    //设置超时时间
+                    .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
+                    //设置读取超时时间
+                    .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
+                    //设置写入超时时间
+                    .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
+                    .cookieJar(new CookieJar() {
+
+                        @Override
+                        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                            cookieStore = cookies;
+                        }
+
+                        @Override
+                        public List<Cookie> loadForRequest(HttpUrl url) {
+                            return cookieStore != null ? cookieStore : new ArrayList<Cookie>();
+                        }
+                    })
+                    //添加头部拦截器，在response调用一次，拦截器的添加有先后顺序
+//                    .addInterceptor(headerInterceptor)
+                    //添加网络拦截器(缓存)，在request和response分别调用一次
+                    .addNetworkInterceptor(cacheInterceptor)
+                    //添加日记拦截器，在response调用一次，，拦截器的添加有先后顺序
+                    .addInterceptor(loggerInterceptor)
                     .cache(cache)
                     .build();
 
             mRetrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)//设置服务器的地址
-                    .addConverterFactory(ScalarsConverterFactory.create())//请求结果转换为基本类型
-                    .addConverterFactory(GsonConverterFactory.create())//添加GSON转换器
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//添加rxjava转换器
+                    .baseUrl(BASE_URL)
+                    //请求结果转换为基本类型
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    //添加GSON转换器
+                    .addConverterFactory(GsonConverterFactory.create())
+                    //添加rxjava转换器
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(okHttpClient)
                     .build();
         }
         return mRetrofit.create(cls);
     }
 
-    //自定义Logger拦截器
+
+    /**
+     * 自定义Logger拦截器
+     */
     static Interceptor loggerInterceptor = new Interceptor() {
         private final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -161,7 +190,7 @@ public class RetrofitFactory {
 
             ResponseBody responseBody = response.body();
             long contentLength = responseBody.contentLength();
-            LogUtils.dTag(TAG,"<-- "
+            LogUtils.dTag(TAG, "<-- "
                     + response.code()
                     + (response.message().isEmpty() ? "" : ' ' + response.message())
                     + ' ' + response.request().url()
@@ -173,9 +202,9 @@ public class RetrofitFactory {
             }
 
             if (!HttpHeaders.hasBody(response)) {
-                LogUtils.dTag(TAG,"<-- END HTTP");
+                LogUtils.dTag(TAG, "<-- END HTTP");
             } else if (bodyHasUnknownEncoding(response.headers())) {
-                LogUtils.dTag(TAG,"<-- END HTTP (encoded body omitted)");
+                LogUtils.dTag(TAG, "<-- END HTTP (encoded body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE);
@@ -203,19 +232,20 @@ public class RetrofitFactory {
                 }
 
                 if (!isPlaintext(buffer)) {
-                    LogUtils.dTag(TAG,"<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
+                    LogUtils.dTag(TAG, "<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
                     return response;
                 }
 
                 if (contentLength != 0) {
-                    LogUtils.json(TAG,buffer.clone().readString(charset));
+                    LogUtils.json(TAG, buffer.clone().readString(charset));
+//                    LogUtils.dTag(TAG, buffer.clone().readString(charset));
                 }
 
                 if (gzippedLength != null) {
-                    LogUtils.dTag(TAG,"<-- END HTTP (" + buffer.size() + "-byte, "
+                    LogUtils.dTag(TAG, "<-- END HTTP (" + buffer.size() + "-byte, "
                             + gzippedLength + "-gzipped-byte body)");
                 } else {
-                    LogUtils.dTag(TAG,"<-- END HTTP (" + buffer.size() + "-byte body)");
+                    LogUtils.dTag(TAG, "<-- END HTTP (" + buffer.size() + "-byte body)");
                 }
             }
             return response;
@@ -249,7 +279,9 @@ public class RetrofitFactory {
         }
     };
 
-    //自定义请求头部
+    /**
+     * 自定义请求头部
+     */
     static Interceptor headerInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -258,10 +290,6 @@ public class RetrofitFactory {
             if (cookie != null && cookie.length() > 0) {
                 request = request.newBuilder()
                         .addHeader("Cookie", cookie).build();
-            }
-            if (sign != null && sign.length() > 0) {
-                request = request.newBuilder()
-                        .addHeader("sign", sign).build();
             }
 
             Response response = chain.proceed(request);
@@ -279,7 +307,9 @@ public class RetrofitFactory {
         }
     };
 
-    // TODO: 2018/6/8  自定义缓存拦截器
+    /**
+     * 自定义缓存拦截器
+     */
     static Interceptor cacheInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
