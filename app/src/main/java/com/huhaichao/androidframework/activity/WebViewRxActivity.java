@@ -122,12 +122,12 @@ public class WebViewRxActivity extends BaseRxActivity {
                 //size等于29是先点全屏，再点播放
                 if (list.size() == 26) {
                     list.get(12).setVisibility(View.INVISIBLE);
-                    list.get(13).setVisibility(View.INVISIBLE);
+//                    list.get(13).setVisibility(View.INVISIBLE);
                     list.get(14).setVisibility(View.INVISIBLE);
                     list.get(23).setVisibility(View.INVISIBLE);
-                } else {
+                } else if (list.size() == 29) {
                     list.get(15).setVisibility(View.INVISIBLE);
-                    list.get(16).setVisibility(View.INVISIBLE);
+//                    list.get(16).setVisibility(View.INVISIBLE);
                     list.get(17).setVisibility(View.INVISIBLE);
                     list.get(26).setVisibility(View.INVISIBLE);
                 }
@@ -170,7 +170,7 @@ public class WebViewRxActivity extends BaseRxActivity {
 
         CookieSyncManager.createInstance(this);
         CookieSyncManager.getInstance().sync();
-        mWebView.loadUrl("https://www.taobao.com/");
+        mWebView.loadUrl("http://aaqqy.com/");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -178,15 +178,15 @@ public class WebViewRxActivity extends BaseRxActivity {
         List<View> list = new ArrayList<View>();
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
-//            Log.d("hhc", "ClassName: ------------start-------------" + vp.getAccessibilityClassName());
+            Log.d("hhc", "ClassName: ------------start-------------" + vp.getAccessibilityClassName());
             for (int i = 0; i < vp.getChildCount(); i++) {
                 View child = vp.getChildAt(i);
-//                Log.d("hhc", "ClassName: " + child.getAccessibilityClassName().toString());
+                Log.d("hhc", "ClassName: " + child.getAccessibilityClassName().toString());
                 list.add(child);
                 //再次 调用本身（递归）
                 list.addAll(getAllChildViews(child));
             }
-//            Log.d("hhc", "ClassName: ---------------end----------" + vp.getAccessibilityClassName());
+            Log.d("hhc", "ClassName: ---------------end----------" + vp.getAccessibilityClassName());
         }
         return list;
     }

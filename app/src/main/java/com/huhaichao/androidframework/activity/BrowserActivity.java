@@ -330,7 +330,7 @@ public class BrowserActivity extends Activity {
         // webSetting.setPreFectch(true);
         long time = System.currentTimeMillis();
         if (mIntentUrl == null) {
-            mWebView.loadUrl("https://www.taobao.com/");
+            mWebView.loadUrl(mHomeUrl);
         } else {
             mWebView.loadUrl(mIntentUrl.toString());
         }

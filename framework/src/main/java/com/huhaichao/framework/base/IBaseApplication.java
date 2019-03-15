@@ -115,6 +115,7 @@ public class IBaseApplication extends Application {
 
                 @Override
                 public void onActivityStarted(Activity activity) {
+                    Log.d(TAG, "onActivityStarted: "+activity.getLocalClassName());
                 }
 
                 @Override
